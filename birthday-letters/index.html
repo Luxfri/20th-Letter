@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Letters for You</title>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Playfair+Display:ital,wght@1,600&family=Special+Elite&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#efe4c4;--wine:#5a1418;--wine2:#7a2a30;--rose:#d9707f;--pink:#f3b9c0;--pink2:#e79aa5;--paper:#fbf3e4;--ink:#3b1216;--tape:#e8d9a8;
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#e6d8b4}}
+:root[data-theme="dark"]{--bg:#e6d8b4}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Special Elite',Georgia,serif;min-height:100vh;
+  background-image:linear-gradient(90deg,rgba(150,30,40,.10) 50%,transparent 50%),linear-gradient(rgba(150,30,40,.10) 50%,transparent 50%);background-size:44px 44px}
+.hand{font-family:'Caveat','Segoe Script',cursive}
+.disp{font-family:'Playfair Display',Georgia,serif;font-style:italic}
+.page{max-width:980px;margin:0 auto;padding:28px 18px 60px}
+.hidden{display:none!important}
+h1{font-size:clamp(2rem,7vw,3.4rem);color:var(--wine);margin:.2em 0 .1em;text-align:center}
+.sub{text-align:center;font-size:1.6rem;color:var(--wine2);margin:0 0 6px}
+.prog{text-align:center;margin:10px 0 26px;color:var(--wine)}
+.hearts{font-size:1.5rem;letter-spacing:4px}
+.hearts .on{color:var(--rose)}.hearts .off{color:#c9b58c}
+
+/* envelopes */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:34px 26px;max-width:820px;margin:0 auto}
+.slot{background:none;border:0;padding:0;cursor:pointer;font:inherit;color:inherit;text-align:center;perspective:700px}
+.slot:focus-visible{outline:3px solid var(--wine);outline-offset:6px;border-radius:8px}
+.env{position:relative;display:block;aspect-ratio:3/2;background:var(--pink);border-radius:6px;box-shadow:4px 6px 0 rgba(90,20,24,.25);transition:transform .25s}
+.slot:nth-child(odd) .env{transform:rotate(-2deg)}.slot:nth-child(even) .env{transform:rotate(1.8deg)}
+.slot:hover .env{transform:rotate(0) translateY(-4px)}
+.env .pocket{position:absolute;inset:0;background:var(--pink2);clip-path:polygon(0 0,50% 56%,100% 0,100% 100%,0 100%);border-radius:6px}
+.env .flap{position:absolute;left:0;right:0;top:0;height:58%;background:#f7c9cf;clip-path:polygon(0 0,100% 0,50% 100%);transform-origin:top;transition:transform .5s;z-index:2}
+.env .seal{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:3;width:40px;height:40px;border-radius:50%;background:var(--wine);color:#fff;display:grid;place-items:center;font-size:1.3rem;box-shadow:0 2px 0 rgba(0,0,0,.25);transition:opacity .3s}
+.slot.open .flap{transform:rotateX(180deg);z-index:0}
+.slot.open .seal{opacity:0}
+.slot.open .env{background:#ecd3c7}
+.lab{display:block;margin-top:12px;font-size:1.5rem;color:var(--wine);line-height:1.1}
+.slot.open .lab::after{content:" ✓";color:var(--rose)}
+
+.cta{display:block;margin:38px auto 0;background:var(--wine);color:var(--paper);border:0;padding:14px 26px;font:700 1.6rem 'Caveat','Segoe Script',cursive;border-radius:4px;cursor:pointer;box-shadow:4px 5px 0 var(--rose);animation:pulse 1.6s ease-in-out infinite}
+.cta:focus-visible{outline:3px solid var(--rose);outline-offset:4px}
+@keyframes pulse{50%{transform:scale(1.05)}}
+
+/* modal */
+.modal{position:fixed;inset:0;background:rgba(60,10,14,.72);display:flex;align-items:center;justify-content:center;padding:calc(18px + env(safe-area-inset-top,0px)) 16px calc(18px + env(safe-area-inset-bottom,0px));z-index:10}
+.letter{position:relative;max-width:520px;width:100%;max-height:100%;overflow:auto;background:var(--paper);padding:34px 30px 28px;border-radius:3px;transform:rotate(-1deg);
+  background-image:repeating-linear-gradient(transparent 0 33px,rgba(217,112,127,.35) 33px 34px);animation:rise .45s ease-out}
+@keyframes rise{from{transform:translateY(60px) rotate(-4deg);opacity:0}}
+.letter h2{margin:0 0 10px;font-size:2rem;color:var(--wine)}
+.letter p{margin:0;font-size:1.55rem;line-height:34px;white-space:pre-line;color:var(--ink)}
+.letter .sig{margin-top:14px;text-align:right;font-size:1.8rem;color:var(--wine)}
+.x{position:absolute;top:6px;right:10px;background:none;border:0;font-size:1.8rem;color:var(--wine);cursor:pointer}
+.close{display:block;margin:16px auto 0;background:var(--wine);color:var(--paper);border:0;padding:8px 20px;font:700 1.4rem 'Caveat',cursive;border-radius:4px;cursor:pointer}
+
+/* scrapbook */
+.board{position:relative;background:var(--wine);padding:26px 22px 34px;display:grid;grid-template-columns:repeat(6,1fr);gap:26px 20px;box-shadow:6px 8px 0 rgba(90,20,24,.3);
+  background-image:radial-gradient(rgba(255,255,255,.06) 1px,transparent 1.5px);background-size:14px 14px}
+.banner{grid-column:1/-1;background:var(--paper);text-align:center;padding:22px 14px;transform:rotate(-1deg);clip-path:polygon(0 4%,8% 0,20% 5%,35% 0,50% 4%,66% 0,80% 5%,93% 0,100% 4%,100% 96%,90% 100%,74% 95%,58% 100%,40% 96%,25% 100%,10% 95%,0 100%)}
+.banner h2{margin:0;font-size:clamp(1.8rem,6vw,3rem);color:var(--wine)}
+.banner p{margin:4px 0 0;font-size:1.5rem;color:var(--wine2)}
+.frame{grid-column:span 4;grid-row:span 2;position:relative;background:var(--paper);padding:16px;transform:rotate(1.2deg);box-shadow:4px 6px 0 rgba(0,0,0,.3)}
+.frame .photo{aspect-ratio:4/5;min-height:260px}
+.note{position:relative;background:var(--tape);padding:16px 14px;font-size:1.05rem;line-height:1.45;color:var(--ink);box-shadow:3px 4px 0 rgba(0,0,0,.25);align-self:start;clip-path:polygon(0 0,100% 2%,98% 100%,3% 97%)}
+.note.q{font-family:'Caveat','Segoe Script',cursive;font-size:1.6rem;line-height:1.15}
+.n1{grid-column:span 2;transform:rotate(-2.5deg)}
+.pol{position:relative;background:#fff;padding:10px 10px 34px;box-shadow:3px 5px 0 rgba(0,0,0,.3)}
+.pol .photo{aspect-ratio:1/1}
+.pol .cap{position:absolute;left:0;right:0;bottom:6px;text-align:center;font-size:1.3rem;color:var(--wine)}
+.p1{grid-column:span 2;transform:rotate(2.5deg)}
+.p2{grid-column:span 2;transform:rotate(-2deg)}
+.p3{grid-column:span 2;transform:rotate(1.5deg)}
+.n2{grid-column:span 2;transform:rotate(1.5deg)}
+.big{grid-column:1/-1;background:var(--paper);padding:22px 24px;transform:rotate(-.6deg);clip-path:polygon(0 3%,50% 0,100% 3%,99% 100%,50% 97%,1% 100%)}
+.big p{margin:0;font-size:1.7rem;line-height:1.3;color:var(--wine)}
+.photo{position:relative;background:repeating-linear-gradient(45deg,#f0e0dc 0 10px,#f7ebe6 10px 20px);display:grid;place-items:center;text-align:center;color:var(--wine2);cursor:pointer;background-size:cover;background-position:center;border:0;width:100%;font:inherit}
+.photo:focus-visible{outline:3px solid var(--rose)}
+.photo span{font-size:1.4rem;padding:8px;font-family:'Caveat',cursive}
+.photo.has span{display:none}
+.tape{position:absolute;top:-12px;left:50%;width:90px;height:26px;background:rgba(232,217,168,.85);transform:translateX(-50%) rotate(-3deg)}
+[data-s]::after{content:attr(data-s);position:absolute;right:-12px;bottom:-16px;font-size:2.4rem;transform:rotate(12deg);filter:drop-shadow(2px 3px 0 rgba(0,0,0,.25))}
+.back{display:block;margin:22px auto 0;background:none;border:0;color:var(--wine);font:700 1.5rem 'Caveat',cursive;text-decoration:underline;cursor:pointer}
+.hint{text-align:center;font-size:.9rem;color:var(--wine2);margin-top:14px}
+@media (max-width:700px){
+  .board{grid-template-columns:repeat(2,1fr);padding:22px 14px}
+  .frame{grid-column:1/-1;grid-row:auto}
+  .n1,.n2{grid-column:1/-1}
+  .p1,.p2,.p3{grid-column:span 1}
+  .p3{grid-column:1/-1;max-width:70%;justify-self:center}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<!-- PAGE 1: LETTERS -->
+<main class="page" id="pageLetters">
+  <h1 class="disp" id="title"></h1>
+  <p class="sub hand">I wrote you a few letters. Open them one by one.</p>
+  <div class="prog"><div class="hearts" id="hearts" aria-hidden="true"></div><div class="hand" id="count" style="font-size:1.4rem"></div></div>
+  <div class="grid" id="grid"></div>
+  <button class="cta hidden" id="cta">Open the last surprise</button>
+</main>
+
+<!-- PAGE 2: SCRAPBOOK -->
+<main class="page hidden" id="pageBook">
+  <div class="board">
+    <div class="banner"><h2 class="disp" id="bTitle"></h2><p class="hand">a little scrapbook of us</p></div>
+    <div class="frame" data-s="🎀"><i class="tape"></i><button class="photo" aria-label="Add a photo"><span>tap to add your favorite photo of us</span></button></div>
+    <div class="note q n1" id="q1"></div>
+    <div class="pol p1" data-s="🌷"><i class="tape"></i><button class="photo" aria-label="Add a photo"><span>add photo</span></button><div class="cap hand">the first time</div></div>
+    <div class="pol p2" data-s="🦋"><i class="tape"></i><button class="photo" aria-label="Add a photo"><span>add photo</span></button><div class="cap hand">my favorite day</div></div>
+    <div class="note n2" id="q2"></div>
+    <div class="pol p3" data-s="🧸"><i class="tape"></i><button class="photo" aria-label="Add a photo"><span>add photo</span></button><div class="cap hand">this year</div></div>
+    <div class="big" data-s="💌"><p class="hand" id="finale"></p></div>
+  </div>
+  <p class="hint">Tap any frame to add a photo. Photos added this way disappear when the page reloads.</p>
+  <button class="back" id="back">Read the letters again</button>
+</main>
+
+<div class="modal hidden" id="modal" role="dialog" aria-modal="true" aria-labelledby="mTitle">
+  <div class="letter">
+    <button class="x" id="x" aria-label="Close letter">×</button>
+    <h2 class="hand" id="mTitle"></h2>
+    <p class="hand" id="mText"></p>
+    <div class="sig hand" id="mSig"></div>
+    <button class="close" id="close">Close letter</button>
+  </div>
+</div>
+
+<script src="config.js"></script>
+<script>
+
+const $ = s => document.querySelector(s);
+const opened = new Set();
+const N = LETTERS.length;
+$('#title').textContent = "Letters for " + HER;
+$('#bTitle').textContent = "Happy Birthday, " + HER;
+$('#q1').textContent = QUOTES[0]; $('#q2').textContent = QUOTES[1]; $('#finale').textContent = FINALE + " — " + FROM;
+
+function progress(){
+  $('#hearts').innerHTML = LETTERS.map((_,i)=>`<span class="${i<opened.size?'on':'off'}">♥</span>`).join('');
+  $('#count').textContent = opened.size + " of " + N + " opened";
+}
+progress();
+
+LETTERS.forEach((l,i)=>{
+  const b = document.createElement('button');
+  b.className = 'slot';
+  b.innerHTML = '<span class="env"><i class="pocket"></i><i class="flap"></i><b class="seal">♥</b></span><span class="lab hand"></span>';
+  b.querySelector('.lab').textContent = l.t;
+  b.addEventListener('click', ()=>{
+    b.classList.add('open');
+    setTimeout(()=>show(i), 450);
+  });
+  $('#grid').appendChild(b);
+});
+
+let last = null;
+function show(i){
+  last = document.activeElement;
+  $('#mTitle').textContent = LETTERS[i].t;
+  $('#mText').textContent = LETTERS[i].m;
+  $('#mSig').textContent = "with love, " + FROM;
+  $('#modal').classList.remove('hidden');
+  $('#close').focus();
+  opened.add(i);
+}
+function hide(){
+  $('#modal').classList.add('hidden');
+  progress();
+  if (opened.size === N) $('#cta').classList.remove('hidden');
+  if (last) last.focus();
+}
+$('#close').onclick = hide; $('#x').onclick = hide;
+$('#modal').addEventListener('click', e => { if (e.target.id === 'modal') hide(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('#modal').classList.contains('hidden')) hide(); });
+
+function go(book){
+  $('#pageLetters').classList.toggle('hidden', book);
+  $('#pageBook').classList.toggle('hidden', !book);
+  window.scrollTo(0,0);
+}
+$('#cta').onclick = () => go(true);
+$('#back').onclick = () => go(false);
+
+
+/* photos and captions from config.js */
+document.querySelectorAll('.pol .cap').forEach((c,i)=>{ if (CAPTIONS[i]) c.textContent = CAPTIONS[i]; });
+const slots = {big:'.frame .photo', p1:'.p1 .photo', p2:'.p2 .photo', p3:'.p3 .photo'};
+Object.keys(slots).forEach(k => {
+  if (!PHOTOS[k]) return;
+  const el = document.querySelector(slots[k]);
+  el.style.backgroundImage = 'url("' + PHOTOS[k] + '")'; el.classList.add('has');
+});
+if (Object.keys(slots).every(k => PHOTOS[k])) document.querySelector('.hint').classList.add('hidden');
+
+/* photo frames: pick an image from the device */
+const pick = document.createElement('input');
+pick.type = 'file'; pick.accept = 'image/*';
+let target = null;
+document.querySelectorAll('.photo').forEach(p => p.addEventListener('click', () => { target = p; pick.click(); }));
+pick.addEventListener('change', () => {
+  const f = pick.files[0]; if (!f || !target) return;
+  const r = new FileReader();
+  r.onload = () => { target.style.backgroundImage = 'url(' + r.result + ')'; target.classList.add('has'); };
+  r.readAsDataURL(f); pick.value = '';
+});
+</script>
+</body>
+</html>
